@@ -1,0 +1,31 @@
+services:
+
+  redis:
+    container_name: djf_test_app-redis
+    image: redis:latest
+    restart: always
+
+  postgres:
+    container_name: djf_test_app-postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=djf_test_app
+      - POSTGRES_USER=djf_test_app
+      - POSTGRES_PASSWORD=djf_test_app
+
+  django:
+    container_name: djf_test_app-django
+    image: mantiby/djf_test_app:latest
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/srv/app/src/
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=djf_test_app.settings.local
+    command: |
+      gunicorn djf_test_app.asgi:application --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --workers 2 --log-file /var/log/app/wsgi.log
