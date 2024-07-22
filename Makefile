@@ -40,6 +40,7 @@ django-check:
 
 pip:
 	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
 
 update:
 	pcu requirements.txt -u
